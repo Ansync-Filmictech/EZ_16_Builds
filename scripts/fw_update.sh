@@ -6,17 +6,11 @@ REMOTE=$(git rev-parse "$UPSTREAM")
 BASE=$(git merge-base @ "$UPSTREAM")
 
 if [ $LOCAL = $REMOTE ]; then
-    echo "Up-to-date"
+    echo "Firmware Up-To-Date"
 elif [ $LOCAL = $BASE ]; then
-    echo "Need to pull"
-elif [ $REMOTE = $BASE ]; then
-    echo "Need to push"
-else
-    echo "Diverged"
+    echo "Firmware Out-Of-Date"
+	git fetch --tags
+	tag=$(git describe --tags `git rev-list --tags --max-count=1`)
+	hexfile="../builds/${tag:4}.hex"
+	./fw_update.py -f $hexfile
 fi
-
-
-git fetch --tags
-tag=$(git describe --tags `git rev-list --tags --max-count=1`)
-hexfile="../builds/${tag:4}.hex"
-./fw_update.py -f $hexfile
