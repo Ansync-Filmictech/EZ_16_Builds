@@ -36,10 +36,10 @@ except:
 
 
 def get_fw_version_string(fw_version):
-    if (fw_version[0], fw_version[1], fw_version[2]) == (0, 0, 0):
+    if (fw_version[0], fw_version[1] ) == (0, 0):
         return "[unknown version]"
     else:
-        return "v{}.{}.{}{}".format(fw_version[0], fw_version[1], fw_version[2], "-dev" if fw_version[3] else "")
+        return "v{}.{}".format(fw_version[0], fw_version[1])
 
 def get_hw_version_string(hw_version):
     if hw_version == (0, 0, 0):
@@ -163,7 +163,7 @@ class FirmwareFromGithub(Firmware):
         """
         if self.hex is None:
             print("Downloading firmware {}...".format(get_fw_version_string(self.fw_version)))
-            response = requests.get('https://api.github.com/repos/madcowswe/ODrive/releases/assets/' + str(self.github_asset_id),
+            response = requests.get('https://api.github.com/repos/Ansync-Filmictech/EZ_16_Builds/releases/assets/' + str(self.github_asset_id),
                                     headers={'Accept': 'application/octet-stream'})
             if response.status_code != 200:
                 raise Exception("failed to download firmware")
