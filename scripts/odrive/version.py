@@ -8,20 +8,18 @@ import platform
 def version_str_to_tuple(version_string):
     """
     Converts a version string to a tuple of the form
-    (major, minor, revision, prerelease)
+    (major, minor)
 
-    Example: "fw-v0.3.6-23" => (0, 3, 6, True)
+    Example: "v0.3" => (0, 3)
 
     If version_string does not match the pattern above, this function throws an
     Exception.
     """
-    regex=r'.*v([0-9]+)\.([0-9]+)\.([0-9]+)(.*)'
+    regex=r'v([0-9]+)\.([0-9]+)'
     if not re.match(regex, version_string):
         raise Exception()
     return (int(re.sub(regex, r"\1", version_string)),
-            int(re.sub(regex, r"\2", version_string)),
-            int(re.sub(regex, r"\3", version_string)),
-            (re.sub(regex, r"\4", version_string) != ""))
+            int(re.sub(regex, r"\2", version_string)))
 
 
 def get_version_from_git():

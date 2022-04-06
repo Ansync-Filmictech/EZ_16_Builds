@@ -106,11 +106,11 @@ class Firmware():
 
     @staticmethod
     def is_newer(a, b):
-        a_num = (a[0], a[1], a[2])
-        b_num = (b[0], b[1], b[2])
-        if a_num == (0, 0, 0) or b_num == (0, 0, 0):
+        a_num = (a[0], a[1])
+        b_num = (b[0], b[1])
+        if a_num == (0, 0) or b_num == (0, 0):
             return False # Cannot compare unknown versions
-        return a_num > b_num or (a_num == b_num and not a[3] and b[3])
+        return a_num > b_num
 
     def __gt__(self, other):
         """
@@ -184,7 +184,7 @@ class FirmwareFromFile(Firmware):
         return self._file
 
 def get_all_github_firmwares():
-    response = requests.get('https://api.github.com/repos/madcowswe/ODrive/releases')
+    response = requests.get('https://api.github.com/repos/Ansync-Filmictech/EZ_16_Builds/releases')
     if response.status_code != 200:
         raise Exception("could not fetch releases")
     response_json = response.json()
@@ -198,13 +198,8 @@ def get_all_github_firmwares():
             except Exception as ex:
                 print(ex)
 
-def get_newest_firmware(hw_version):
-    """
-    Returns the newest available firmware for the specified hardware version
-    """
+def get_newest_firmware():
     firmwares = get_all_github_firmwares()
-    firmwares = filter(lambda fw: not fw.fw_version[3], firmwares) # ignore prereleases
-    firmwares = filter(lambda fw: fw.hw_version == hw_version, firmwares)
     firmwares = list(firmwares)
     firmwares.sort()
     return firmwares[-1] if len(firmwares) else None
@@ -326,9 +321,9 @@ def update_device(device, firmware, logger, cancellation_token):
                 suggestion = 'Run "make write_otp" to program the board version.'
             raise Exception('Cannot check online for new firmware because the board version is unknown. ' + suggestion)
         print("Checking online for newest firmware...", end='')
-        firmware = get_newest_firmware(hw_version)
+        firmware = get_newest_firmware()
         if firmware is None:
-            raise Exception("could not find any firmware release for this board version")
+            raise Exception("Could not find any firmware release for this board version")
         print(" found {}".format(get_fw_version_string(firmware.fw_version)))
 
     if firmware.fw_version <= fw_version:
