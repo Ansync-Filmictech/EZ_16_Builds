@@ -176,10 +176,6 @@ class FirmwareFromFile(Firmware):
         self._file = file
         fw_version_regex = r'.*([0-9]+)\.([0-9]+)\.([0-9]+)(.*)'
         fw_version_match = re.match(fw_version_regex, file)
-        self.fw_version = (int(fw_version_match.group(1)),
-                           int(fw_version_match.group(2)),
-                           int(fw_version_match.group(3)),
-                           0);
     def get_as_hex(self):
         return self._file
 
